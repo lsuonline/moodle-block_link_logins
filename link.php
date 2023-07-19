@@ -56,18 +56,18 @@ $prospectiveusername = link::generate_username_from_email($page_params['prospect
 
 // Check for any existing duplicate links.
 $dupe = link::check_dupes($prospectiveusername, $existinguser);
+
+// Move the name around for future use.
 $existinguserdupe = $dupe->existingusername;
-if (isset($existinguserdupe->id)) {
+
+// Make sure we have all the creator data before jumping to conclusions.
+if (isset($existinguserdupe->id) && isset($dupe->creator->firstname) && isset($dupe->creator->lastname)) {
     $existinguserdupe->creatorfirstname = $dupe->creator->firstname;
     $existinguserdupe->creatorlastname = $dupe->creator->lastname;
+} else if (isset($existinguserdupe->id)) {
+    $existinguserdupe->creatorfirstname = "OAuth 2";
+    $existinguserdupe->creatorlastname = "Services";
 }
-
-/*
-echo("<pre>");
-var_dump($dupe);
-echo("</pre>");
-die();
-*/
 
 // Set the system context.
 $system_context = context_system::instance();
