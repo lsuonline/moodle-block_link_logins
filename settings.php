@@ -24,6 +24,18 @@
 
 global $CFG, $DB;
 
+// Get the list of issuers for later.
+$datas = $DB->get_records('oauth2_issuer', array('enabled' => 1, 'showonloginpage' => 1), $sort='', 'id, name');
+
+// Set up the empty array.
+$issuers = array();
+
+// Loop through the data and build the key / value pair.
+foreach ($datas as $data) {
+    // Set the key / value pair here.
+    $issuers[$data->id] = $data->name;
+}
+
 // Set up the allowed users.
 $settings->add(
     new admin_setting_configtext(
@@ -51,5 +63,16 @@ $settings->add(
         get_string('extdomain', 'block_link_logins'),
         get_string('extdomain_desc', 'block_link_logins'),
         'admin'
+    )
+);
+
+// Set the issuerid.
+$settings->add(
+    new admin_setting_configselect(
+        'block_link_logins_issuerid',
+        get_string('issuerid', 'block_link_logins'),
+        get_string('issuerid_desc', 'block_link_logins'),
+        1,
+        $issuers
     )
 );

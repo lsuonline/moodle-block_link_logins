@@ -101,7 +101,10 @@ class link {
     }
 
     public static function handle_creating_link($prospectiveemail, $prospectiveusername, $existinguserid) {
-        global $DB, $USER;
+        global $CFG, $DB, $USER;
+
+        // Get the issuerid or set it to 1 as a default.
+        $issuerid = isset($CFG->block_link_logins_issuerid) ? $CFG->block_link_logins_issuerid : 1;
 
         // Set the table.
         $table = 'auth_oauth2_linked_login';
@@ -112,8 +115,7 @@ class link {
         $dataobject->timemodified = time();
         $dataobject->usermodified = $USER->id;
         $dataobject->userid = $existinguserid;
-        // TODO: deal with this.
-        $dataobject->issuerid = 2;
+        $dataobject->issuerid = $issuerid;
         $dataobject->username = $prospectiveusername;
         $dataobject->email = $prospectiveemail;
         $dataobject->confirmtoken = '';
